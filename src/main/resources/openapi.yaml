@@ -11,7 +11,42 @@ tags:
     description: Manage transactions on a bank account
   - name: user
     description: Manage a user
+  - name: auth
+    description: Authenticate a user and issue JWTs
 paths:
+  /v1/auth:
+    post:
+      tags:
+        - auth
+      description: Issue a new JWT
+      operationId: authorize
+      requestBody:
+        description: Authorize a user an issue a new JWT
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizationRequest'
+        required: true
+      responses:
+        '200':
+          description: Bank Account has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizationResponse'
+        '400':
+          description: Invalid details supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestErrorResponse"
+        '500':
+          description: An unexpected error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      
   /v1/accounts:
     post:
       tags:
@@ -927,6 +962,21 @@ components:
                 type: string
               type:
                 type: string
+    AuthorizationRequest:
+      type: object
+      required:
+        - userid
+      properties:
+        userid:
+          type: string
+          format: ^usr-[A-Za-z0-9]+$
+    AuthorizationResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http
