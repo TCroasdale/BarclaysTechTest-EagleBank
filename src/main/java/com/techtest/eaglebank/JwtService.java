@@ -1,6 +1,5 @@
 package com.techtest.eaglebank;
 
-import java.time.OffsetDateTime;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;

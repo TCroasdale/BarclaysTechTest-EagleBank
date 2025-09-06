@@ -1,7 +1,5 @@
 package com.techtest.eaglebank;
 
-import java.time.OffsetDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +8,6 @@ import com.techtest.eaglebank.entities.Session;
 import com.techtest.eaglebank.entities.User;
 import com.techtest.eaglebank.repositories.SessionRepository;
 import com.techtest.eaglebank.repositories.UserRepository;
-
-import jakarta.validation.constraints.Null;
 
 @Service
 @Transactional

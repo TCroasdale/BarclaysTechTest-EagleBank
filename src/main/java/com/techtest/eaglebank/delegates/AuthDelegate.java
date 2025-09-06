@@ -1,25 +1,14 @@
 package com.techtest.eaglebank.delegates;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import com.baeldung.openapi.api.ApiUtil;
 import com.baeldung.openapi.api.V1Api;
 import com.baeldung.openapi.api.V1ApiDelegate;
 import com.baeldung.openapi.model.AuthorizationRequest;
 import com.baeldung.openapi.model.AuthorizationResponse;
-import com.baeldung.openapi.model.BankAccountResponse;
-import com.baeldung.openapi.model.CreateBankAccountRequest;
-import com.baeldung.openapi.model.CreateUserRequest;
-import com.baeldung.openapi.model.UserResponse;
 import com.techtest.eaglebank.DatabaseService;
 import com.techtest.eaglebank.JwtService;
 import com.techtest.eaglebank.entities.User;
-import com.techtest.eaglebank.repositories.UserRepository;
 
 public class AuthDelegate implements V1ApiDelegate {
     

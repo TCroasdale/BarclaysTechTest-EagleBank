@@ -1,8 +1,6 @@
 package com.techtest.eaglebank.entities;
 
 import java.sql.Date;
-import java.time.OffsetDateTime;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +13,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.AccessLevel;
 
 @Entity
 @Table(name = "sessions")

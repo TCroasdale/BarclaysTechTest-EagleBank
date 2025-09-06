@@ -1,20 +1,14 @@
 package com.techtest.eaglebank.delegates;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.NativeWebRequest;
-
 import com.baeldung.openapi.api.V1ApiDelegate;
 import com.baeldung.openapi.model.AuthorizationRequest;
 import com.baeldung.openapi.model.AuthorizationResponse;
 import com.baeldung.openapi.model.CreateUserRequest;
 import com.baeldung.openapi.model.UserResponse;
-import com.techtest.eaglebank.JwtService;
 
 @Import({ AuthDelegate.class, UserDelegate.class })
 @Component
