@@ -1,4 +1,4 @@
-package com.techtest.eaglebank.eaglebank;
+package com.techtest.eaglebank;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
