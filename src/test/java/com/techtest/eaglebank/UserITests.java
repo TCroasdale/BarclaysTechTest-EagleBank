@@ -15,7 +15,7 @@ import com.baeldung.openapi.model.UserResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class EaglebankApplicationITests {
+class UserITests {
 
 	@Autowired private TestRestTemplate template;
 

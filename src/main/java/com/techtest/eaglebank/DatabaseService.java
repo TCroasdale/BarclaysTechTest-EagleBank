@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.techtest.eaglebank.entities.Account;
 import com.techtest.eaglebank.entities.Session;
 import com.techtest.eaglebank.entities.User;
+import com.techtest.eaglebank.repositories.AccountRepository;
 import com.techtest.eaglebank.repositories.SessionRepository;
 import com.techtest.eaglebank.repositories.UserRepository;
 
@@ -14,6 +16,7 @@ import com.techtest.eaglebank.repositories.UserRepository;
 public class DatabaseService {
     @Autowired UserRepository userRepository;
     @Autowired SessionRepository sessionRepository;
+    @Autowired AccountRepository accountRepository;
 
     public User saveUser(User u) {
         return userRepository.save(u);
@@ -42,6 +45,10 @@ public class DatabaseService {
         } catch(Exception e) {
             return false;
         }
+    }
+
+    public Account saveAccount(Account a) {
+        return accountRepository.save(a);
     }
 
 }

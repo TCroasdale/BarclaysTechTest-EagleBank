@@ -22,9 +22,11 @@ import lombok.Setter;
 @Setter
 public class User {
     @Id
-    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    public long getId() {
+        return id;
+    }
     
     @Column(name = "userid")
     public String userid;
