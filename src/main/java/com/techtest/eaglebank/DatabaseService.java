@@ -1,5 +1,7 @@
 package com.techtest.eaglebank;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +62,10 @@ public class DatabaseService {
 
     public Transaction saveTransaction(Transaction t) {
         return transactionRepository.save(t);
+    }
+
+    public List<Transaction> getTransactionsForAccount(Account a) {
+        return transactionRepository.findByAccountNumber(a.accountNumber);
     }
 
     public void Reset() {

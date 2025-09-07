@@ -16,6 +16,7 @@ import com.baeldung.openapi.model.BankAccountResponse;
 import com.baeldung.openapi.model.CreateBankAccountRequest;
 import com.baeldung.openapi.model.CreateTransactionRequest;
 import com.baeldung.openapi.model.CreateUserRequest;
+import com.baeldung.openapi.model.ListTransactionsResponse;
 import com.baeldung.openapi.model.TransactionResponse;
 import com.baeldung.openapi.model.UserResponse;
 
@@ -46,5 +47,9 @@ public class ApiDelegate implements V1ApiDelegate {
 
     public ResponseEntity<TransactionResponse> createTransaction(String accountNumber, CreateTransactionRequest createTransactionRequest) {
         return transactionDelegate.createTransaction(accountNumber, createTransactionRequest);
+    }
+
+    public ResponseEntity<ListTransactionsResponse> listAccountTransaction(String accountNumber) {
+        return transactionDelegate.listAccountTransaction(accountNumber);
     }
 }

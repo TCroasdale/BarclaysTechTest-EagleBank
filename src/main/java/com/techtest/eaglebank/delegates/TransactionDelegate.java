@@ -1,14 +1,19 @@
 package com.techtest.eaglebank.delegates;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import com.baeldung.openapi.api.ApiUtil;
 import com.baeldung.openapi.api.V1Api;
 import com.baeldung.openapi.api.V1ApiDelegate;
 import com.baeldung.openapi.model.CreateTransactionRequest;
+import com.baeldung.openapi.model.ListTransactionsResponse;
 import com.baeldung.openapi.model.TransactionResponse;
 import com.techtest.eaglebank.DatabaseService;
 import com.techtest.eaglebank.entities.Account;
@@ -49,7 +54,6 @@ public class TransactionDelegate implements V1ApiDelegate {
             sessionUser = (User)getRequest().get().getAttribute("user", 0);
         }
         if (sessionUser == null) {
-            System.out.println("No user session.");
             return ResponseEntity.status(401).build();
         }
 
@@ -62,12 +66,10 @@ public class TransactionDelegate implements V1ApiDelegate {
 
         Account a = databaseService.getAccount(accountNumber);
         if (a == null) {
-            System.out.println("Couldn't find account");
             return ResponseEntity.notFound().build();
         }
 
         if (a.ownerid != sessionUser.getId()) {
-            System.out.println("Not the logged in users' account");
             return ResponseEntity.status(403).build();
         }
 
@@ -75,7 +77,6 @@ public class TransactionDelegate implements V1ApiDelegate {
             a.balance += t.amount;
         } else {
             if (a.balance < t.amount) {
-                System.out.println("Insufficient funds");
                 return ResponseEntity.unprocessableEntity().build();
             }
 
@@ -88,5 +89,49 @@ public class TransactionDelegate implements V1ApiDelegate {
         TransactionResponse resp = new TransactionResponse(Long.toString(t.getId()), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
         return ResponseEntity.ok(resp);
         
+    }
+
+    /**
+     * GET /v1/accounts/{accountNumber}/transactions
+     * List transactions
+     *
+     * @param accountNumber Account number of the bank account (required)
+     * @return The list of transaction details (status code 200)
+     *         or The request didn&#39;t supply all the necessary data (status code 400)
+     *         or Access token is missing or invalid (status code 401)
+     *         or The user is not allowed to access the transactions (status code 403)
+     *         or Bank account was not found (status code 404)
+     *         or An unexpected error occurred (status code 500)
+     * @see V1Api#listAccountTransaction
+     */
+    @Override
+    public ResponseEntity<ListTransactionsResponse> listAccountTransaction(String accountNumber) {
+        User sessionUser = null;
+        if (getRequest().isPresent()) {
+            sessionUser = (User)getRequest().get().getAttribute("user", 0);
+        }
+        if (sessionUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Account a = databaseService.getAccount(accountNumber);
+        if (a == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (a.ownerid != sessionUser.getId()) {
+            return ResponseEntity.status(403).build();
+        }
+
+        List<Transaction> transactions = databaseService.getTransactionsForAccount(a);
+
+        ListTransactionsResponse resp = new ListTransactionsResponse();
+        for (Transaction t : transactions) {
+            TransactionResponse tr = new TransactionResponse(Long.toString(t.getId()), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
+            tr.setReference(t.reference);
+            tr.setUserId(sessionUser.userid);
+            resp.addTransactionsItem(tr);
+        }
+        return ResponseEntity.ok(resp);
     }
 }
