@@ -26,9 +26,11 @@ import lombok.Setter;
 @Setter
 public class Account {
     @Id
-    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    public long getId() {
+        return id;
+    }
     
     @Column(name = "accountName")
     public String accountName;
@@ -70,8 +72,8 @@ public class Account {
     }
 
     public Account() {
-        accountNumber = "";
-        for (int i = 0; i < 8; i++) {
+        accountNumber = "01";
+        for (int i = 0; i < 6; i++) {
             accountNumber += randomDigit();
         }
 

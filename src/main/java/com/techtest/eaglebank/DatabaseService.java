@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.techtest.eaglebank.entities.Account;
 import com.techtest.eaglebank.entities.Session;
+import com.techtest.eaglebank.entities.Transaction;
 import com.techtest.eaglebank.entities.User;
 import com.techtest.eaglebank.repositories.AccountRepository;
 import com.techtest.eaglebank.repositories.SessionRepository;
+import com.techtest.eaglebank.repositories.TransactionRepository;
 import com.techtest.eaglebank.repositories.UserRepository;
 
 @Service
@@ -17,6 +19,7 @@ public class DatabaseService {
     @Autowired UserRepository userRepository;
     @Autowired SessionRepository sessionRepository;
     @Autowired AccountRepository accountRepository;
+    @Autowired TransactionRepository transactionRepository;
 
     public User saveUser(User u) {
         return userRepository.save(u);
@@ -34,7 +37,7 @@ public class DatabaseService {
         return userRepository.count();
     }
 
-        public Session createSession(Session s) {
+    public Session createSession(Session s) {
         return sessionRepository.save(s);
     }
 
@@ -49,6 +52,21 @@ public class DatabaseService {
 
     public Account saveAccount(Account a) {
         return accountRepository.save(a);
+    }
+
+    public Account getAccount(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber);
+    }
+
+    public Transaction saveTransaction(Transaction t) {
+        return transactionRepository.save(t);
+    }
+
+    public void Reset() {
+        transactionRepository.deleteAll();
+        accountRepository.deleteAll();
+        userRepository.deleteAll();
+        sessionRepository.deleteAll();
     }
 
 }

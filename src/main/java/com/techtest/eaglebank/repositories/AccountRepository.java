@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.techtest.eaglebank.entities.Account;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long>{}
+public interface AccountRepository extends JpaRepository<Account, Long>{
+        Account findByAccountNumber(String accountNumber);
+}

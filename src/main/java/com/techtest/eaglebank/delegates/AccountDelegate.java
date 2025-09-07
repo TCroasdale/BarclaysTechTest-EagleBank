@@ -49,6 +49,11 @@ public class AccountDelegate implements V1ApiDelegate {
             return ResponseEntity.status(401).build();
         }
 
+        if (createBankAccountRequest.getName().isBlank()) {
+            return ResponseEntity.status(400).build();
+
+        }
+
         Account a = new Account();
         a.accountName = createBankAccountRequest.getName();
         a.accountType = createBankAccountRequest.getAccountType();
