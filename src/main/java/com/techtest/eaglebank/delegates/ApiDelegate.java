@@ -2,13 +2,9 @@ package com.techtest.eaglebank.delegates;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.baeldung.openapi.api.ApiUtil;
-import com.baeldung.openapi.api.V1Api;
 import com.baeldung.openapi.api.V1ApiDelegate;
 import com.baeldung.openapi.model.AuthorizationRequest;
 import com.baeldung.openapi.model.AuthorizationResponse;
@@ -51,5 +47,9 @@ public class ApiDelegate implements V1ApiDelegate {
 
     public ResponseEntity<ListTransactionsResponse> listAccountTransaction(String accountNumber) {
         return transactionDelegate.listAccountTransaction(accountNumber);
+    }
+
+    public ResponseEntity<TransactionResponse> fetchAccountTransactionByID(String accountNumber, String transactionId) {
+        return transactionDelegate.fetchAccountTransactionByID(accountNumber, transactionId);
     }
 }

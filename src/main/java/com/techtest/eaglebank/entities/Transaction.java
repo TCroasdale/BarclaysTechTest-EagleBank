@@ -1,6 +1,8 @@
 package com.techtest.eaglebank.entities;
 
 import java.time.OffsetDateTime;
+import java.util.Random;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,13 +14,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "transactions")
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Getter
 @Setter
@@ -28,6 +28,12 @@ public class Transaction {
     private long id;
     public long getId() {
         return id;
+    }
+
+    @Column(name = "transactionId")
+    public String transactionId;
+    public String getTransactionId() {
+        return transactionId;
     }
 
     @Column(name = "transactionType")
@@ -56,4 +62,14 @@ public class Transaction {
     @UpdateTimestamp
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     public OffsetDateTime updatedTimestamp;
+
+
+    private static String randomDigit() {
+        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return "" + characters.charAt(new Random().nextInt(characters.length()));
+    }
+
+    public Transaction() {
+        transactionId = "tan-" + randomDigit();
+    }
 }

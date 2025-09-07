@@ -10,4 +10,5 @@ import com.techtest.eaglebank.entities.Transaction;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long>{
     public List<Transaction> findByAccountNumber(String accountNumber);
+    public Transaction findByTransactionId(String transactionId);
 }

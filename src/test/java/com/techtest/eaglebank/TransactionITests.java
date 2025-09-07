@@ -157,4 +157,79 @@ class TransactionITests {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(404));
 	}
 
+	@Test
+	public void fetchTransaction() throws Exception {
+		Transaction t = new Transaction();
+		t.accountNumber = accountNum;
+		t.amount = 10;
+		t.currency = CurrencyEnum.GBP;
+		t.transfactionType = TypeEnum.DEPOSIT;
+		t.reference = "Test reference";
+		t = db.saveTransaction(t);
+
+		System.out.println(t.getTransactionId());
+		ResponseEntity<TransactionResponse> response = template.getForEntity("/v1/accounts/" + accountNum + "/transactions/" + t.getTransactionId(), TransactionResponse.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(200));
+		assertThat(response.getBody()).isNotNull();
+		assertThat(response.getBody().getAmount()).isEqualTo(10);
+		assertThat(response.getBody().getReference()).isEqualTo("Test reference");
+	}
+
+	@Test
+	public void fetchTransactionOnOtherUser() throws Exception {
+		Transaction t = new Transaction();
+		t.accountNumber = accountNum;
+		t.amount = 10;
+		t.currency = CurrencyEnum.GBP;
+		t.transfactionType = TypeEnum.DEPOSIT;
+		t.reference = "Test reference";
+		t = db.saveTransaction(t);
+
+		ResponseEntity<TransactionResponse> response = template.getForEntity("/v1/accounts/" + otheraccountNum + "/transactions/" + t.getTransactionId(), TransactionResponse.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(403));
+	}
+
+	@Test
+	public void fetchTransactionOnONonExistUser() throws Exception {
+		Transaction t = new Transaction();
+		t.accountNumber = accountNum;
+		t.amount = 10;
+		t.currency = CurrencyEnum.GBP;
+		t.transfactionType = TypeEnum.DEPOSIT;
+		t.reference = "Test reference";
+		t = db.saveTransaction(t);
+
+		ResponseEntity<TransactionResponse> response = template.getForEntity("/v1/accounts/01654321/transactions/" + t.getTransactionId(), TransactionResponse.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(404));
+	}
+
+	@Test
+	public void fetchTransactionOnNonExistantTransaction() throws Exception {
+		Transaction t = new Transaction();
+		t.accountNumber = accountNum;
+		t.amount = 10;
+		t.currency = CurrencyEnum.GBP;
+		t.transfactionType = TypeEnum.DEPOSIT;
+		t.reference = "Test reference";
+		t.transactionId = "tan-a";
+		t = db.saveTransaction(t);
+
+		ResponseEntity<TransactionResponse> response = template.getForEntity("/v1/accounts/" + accountNum + "/transactions/tan-X", TransactionResponse.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(404));
+	}
+
+	@Test
+	public void fetchTransactionFromOtherAccount() throws Exception {
+		Transaction t = new Transaction();
+		t.accountNumber = otheraccountNum;
+		t.amount = 10;
+		t.currency = CurrencyEnum.GBP;
+		t.transfactionType = TypeEnum.DEPOSIT;
+		t.reference = "Test reference";
+		t = db.saveTransaction(t);
+
+		ResponseEntity<TransactionResponse> response = template.getForEntity("/v1/accounts/" + accountNum + "/transactions/" + t.getTransactionId(), TransactionResponse.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(404));
+	}
+
 }

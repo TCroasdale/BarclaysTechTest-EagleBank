@@ -4,12 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import com.baeldung.openapi.api.ApiUtil;
 import com.baeldung.openapi.api.V1Api;
 import com.baeldung.openapi.api.V1ApiDelegate;
 import com.baeldung.openapi.model.CreateTransactionRequest;
@@ -86,7 +83,7 @@ public class TransactionDelegate implements V1ApiDelegate {
         a = databaseService.saveAccount(a);
         t = databaseService.saveTransaction(t);
 
-        TransactionResponse resp = new TransactionResponse(Long.toString(t.getId()), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
+        TransactionResponse resp = new TransactionResponse(t.getTransactionId(), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
         return ResponseEntity.ok(resp);
         
     }
@@ -127,11 +124,60 @@ public class TransactionDelegate implements V1ApiDelegate {
 
         ListTransactionsResponse resp = new ListTransactionsResponse();
         for (Transaction t : transactions) {
-            TransactionResponse tr = new TransactionResponse(Long.toString(t.getId()), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
+            TransactionResponse tr = new TransactionResponse(t.getTransactionId(), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
             tr.setReference(t.reference);
             tr.setUserId(sessionUser.userid);
             resp.addTransactionsItem(tr);
         }
         return ResponseEntity.ok(resp);
+    }
+
+     /**
+     * GET /v1/accounts/{accountNumber}/transactions/{transactionId}
+     * Fetch transaction by ID.
+     *
+     * @param accountNumber Account number of the bank account (required)
+     * @param transactionId ID of the transaction (required)
+     * @return The transaction details (status code 200)
+     *         or The request didn&#39;t supply all the necessary data (status code 400)
+     *         or Access token is missing or invalid (status code 401)
+     *         or The user is not allowed to access the transaction (status code 403)
+     *         or Bank account was not found (status code 404)
+     *         or An unexpected error occurred (status code 500)
+     * @see V1Api#fetchAccountTransactionByID
+     */
+    @Override
+    public ResponseEntity<TransactionResponse> fetchAccountTransactionByID(String accountNumber, String transactionId) {
+        User sessionUser = null;
+        if (getRequest().isPresent()) {
+            sessionUser = (User)getRequest().get().getAttribute("user", 0);
+        }
+        if (sessionUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Account a = databaseService.getAccount(accountNumber);
+        if (a == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (a.ownerid != sessionUser.getId()) {
+            return ResponseEntity.status(403).build();
+        }
+
+        Transaction t = databaseService.getTransactionFromTransactionId(transactionId);
+        if (t == null) {
+            System.out.println("transaction not found");
+            return ResponseEntity.notFound().build();
+        }
+        if (t.accountNumber.compareTo(a.accountNumber) != 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        TransactionResponse tr = new TransactionResponse(t.getTransactionId(), t.amount, t.currency, t.transfactionType, t.createdTimestamp);
+        tr.setReference(t.reference);
+        tr.setUserId(sessionUser.userid);
+        
+        return ResponseEntity.ok(tr);
     }
 }

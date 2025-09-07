@@ -67,6 +67,9 @@ public class DatabaseService {
     public List<Transaction> getTransactionsForAccount(Account a) {
         return transactionRepository.findByAccountNumber(a.accountNumber);
     }
+    public Transaction getTransactionFromTransactionId(String id) {
+        return transactionRepository.findByTransactionId(id);
+    }
 
     public void Reset() {
         transactionRepository.deleteAll();
