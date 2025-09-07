@@ -9,7 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.baeldung.openapi.model.BankAccountResponse.CurrencyEnum;
 import com.baeldung.openapi.model.BankAccountResponse.SortCodeEnum;
-import com.baeldung.openapi.model.CreateBankAccountRequest.AccountTypeEnum;
+import com.baeldung.openapi.model.BankAccountResponse.AccountTypeEnum;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

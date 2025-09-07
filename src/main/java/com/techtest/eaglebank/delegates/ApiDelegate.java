@@ -52,4 +52,8 @@ public class ApiDelegate implements V1ApiDelegate {
     public ResponseEntity<TransactionResponse> fetchAccountTransactionByID(String accountNumber, String transactionId) {
         return transactionDelegate.fetchAccountTransactionByID(accountNumber, transactionId);
     }
+
+    public ResponseEntity<BankAccountResponse> fetchAccountByAccountNumber(String accountNumber) {
+        return accountDelegate.fetchAccountByAccountNumber(accountNumber);
+    }
 }

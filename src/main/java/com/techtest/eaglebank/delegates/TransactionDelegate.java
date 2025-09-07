@@ -167,7 +167,6 @@ public class TransactionDelegate implements V1ApiDelegate {
 
         Transaction t = databaseService.getTransactionFromTransactionId(transactionId);
         if (t == null) {
-            System.out.println("transaction not found");
             return ResponseEntity.notFound().build();
         }
         if (t.accountNumber.compareTo(a.accountNumber) != 0) {

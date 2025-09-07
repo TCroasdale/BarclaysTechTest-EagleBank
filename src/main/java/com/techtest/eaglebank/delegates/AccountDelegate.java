@@ -56,13 +56,48 @@ public class AccountDelegate implements V1ApiDelegate {
 
         Account a = new Account();
         a.accountName = createBankAccountRequest.getName();
-        a.accountType = createBankAccountRequest.getAccountType();
+        a.accountType = BankAccountResponse.AccountTypeEnum.fromValue(createBankAccountRequest.getAccountType().getValue());
         a.ownerid = sessionUser.getId();
 
         databaseService.saveAccount(a);
 
-        BankAccountResponse.AccountTypeEnum type = BankAccountResponse.AccountTypeEnum.fromValue(a.accountType.getValue());
-        BankAccountResponse resp = new BankAccountResponse(a.accountNumber, a.sortCode, a.accountName, type, a.balance, a.currency, a.createdTimestamp, a.updatedTimestamp);
+        BankAccountResponse resp = new BankAccountResponse(a.accountNumber, a.sortCode, a.accountName, a.accountType, a.balance, a.currency, a.createdTimestamp, a.updatedTimestamp);
+        return ResponseEntity.ok(resp);
+    }
+
+    /**
+     * GET /v1/accounts/{accountNumber}
+     * Fetch account by account number.
+     *
+     * @param accountNumber Account number of the bank account (required)
+     * @return The bank account details (status code 200)
+     *         or The request didn&#39;t supply all the necessary data (status code 400)
+     *         or The user was not authenticated (status code 401)
+     *         or The user is not allowed to access the bank account details (status code 403)
+     *         or Bank account was not found (status code 404)
+     *         or An unexpected error occurred (status code 500)
+     * @see V1Api#fetchAccountByAccountNumber
+     */
+    @Override
+    public ResponseEntity<BankAccountResponse> fetchAccountByAccountNumber(String accountNumber) {
+        User sessionUser = null;
+        if (getRequest().isPresent()) {
+            sessionUser = (User)getRequest().get().getAttribute("user", 0);
+        }
+        if (sessionUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Account account = databaseService.getAccount(accountNumber);
+        if (account == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (account.ownerid != sessionUser.getId()) {
+            return ResponseEntity.status(403).build();
+        }
+
+        BankAccountResponse resp = new BankAccountResponse(account.accountNumber, account.sortCode, account.accountName, account.accountType, account.balance, account.currency, account.createdTimestamp, account.updatedTimestamp);
         return ResponseEntity.ok(resp);
     }
 }
